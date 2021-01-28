@@ -40,49 +40,6 @@ const vec2 rule30start = ivec2(500, 500);
  */
 float hash21(vec2 p){ return fract(sin(dot(p, vec2(141.13, 289.97)))*43758.5453); }
 
-/** 
- * Noise
- * @src https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83#perlin-noise
- */
- 
-// Noise: Random
-float rand(vec2 c){
-    return fract(sin(dot(c.xy, vec2(12.9898, 78.233))) * 43758.5453);
-}
-
-// Noise: Basic noise
-float noise(vec2 p, float freq){
-    float unit = iResolution.x / freq;
-    vec2 ij = floor(p / unit);
-    vec2 xy = .5 * (1. - cos(PI * mod(p, unit) / unit));
-    float a = rand((ij + vec2(0., 0.)));
-    float b = rand((ij + vec2(1., 0.)));
-    float c = rand((ij + vec2(0., 1.)));
-    float d = rand((ij + vec2(1., 1.)));
-    float x1 = mix(a,b,xy.x);
-    float x2 = mix(c,d,xy.x);
-    return mix(x1,x2,xy.y);
-}
-
-
-/**
-* Fractional Brownian Motion
-* @src https://thebookofshaders.com/13/
-*/
-float fbm ( in vec2 _st, in int octaves) {
-    float v = 0.0;
-    float a = 0.5;
-    vec2 shift = vec2(100.0);
-    // Rotate to reduce axial bias
-    mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.50));
-    for (int i = 0; i < octaves; ++i) {
-        v += a * noise(_st, 2000. + abs(1000. * sin(iTime * 0.0009)));
-        _st = rot * _st * 2.0 + shift;
-        a *= 0.5;
-    }
-    return v;
-}
-
 /**
  * Simple mapping from one range to another
  */

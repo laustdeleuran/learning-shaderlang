@@ -70,7 +70,7 @@ vec3 hsb2rgb( in vec3 c ){
 * Genuary 01
 * @main
 */
-void mainImage(out vec4 fragColor, in vec2 fragCoord ) {
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 	vec2 st = fragCoord.xy/iResolution.xy*1.;
 	vec3 color = vec3(0.0);
 
