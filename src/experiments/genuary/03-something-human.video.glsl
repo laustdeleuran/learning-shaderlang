@@ -56,9 +56,9 @@ float noise(vec2 p, float freq){
 }
 
 /**
-* Fractional Brownian Motion
-* @src https://thebookofshaders.com/13/
-*/
+ * Fractional Brownian Motion
+ * @src https://thebookofshaders.com/13/
+ */
 float fbm(in vec2 _st, in int octaves) {
     float v = 0.0;
     float a = 0.5;
@@ -74,10 +74,10 @@ float fbm(in vec2 _st, in int octaves) {
 }
 
 /**
-* RGB to HSB
-* All components are in the range [0…1], including hue.
-* @src https://stackoverflow.com/a/17897228
-*/
+ * RGB to HSB
+ * All components are in the range [0…1], including hue.
+ * @src https://stackoverflow.com/a/17897228
+ */
 vec3 rgb2hsb(vec3 c) {
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
     vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
@@ -89,10 +89,10 @@ vec3 rgb2hsb(vec3 c) {
 }
  
 /**
-* HSB to RGB
-* All components are in the range [0…1], including hue.
-* @src https://stackoverflow.com/a/17897228
-*/
+ * HSB to RGB
+ * All components are in the range [0…1], including hue.
+ * @src https://stackoverflow.com/a/17897228
+ */
 vec3 hsb2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
