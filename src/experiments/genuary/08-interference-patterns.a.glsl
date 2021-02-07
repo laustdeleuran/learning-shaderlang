@@ -33,13 +33,6 @@ void main(void) { mainImage(fragColor,inData.v_texcoord * iResolution.xy); }
 #define PI 3.14159265359
 
 /**
- * Map range to new range
- */
-float map(float value, float min1, float max1, float min2, float max2) {
-    return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
-}
-
-/**
  * Simplex noise
  * @src https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83#simplex-noise
  */
@@ -69,7 +62,31 @@ float snoise(vec2 v){
   vec3 g;
   g.x  = a0.x  * x0.x  + h.x  * x0.y;
   g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-  return map(130.0 * dot(m, g), -1., 1., 0., 1.);
+  return 130.0 * dot(m, g);
+}
+
+/** 
+ * Noise
+ * @src https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83#perlin-noise
+ */
+ 
+// Noise: Random
+float rand(vec2 c){
+    return fract(sin(dot(c.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+// Noise: Basic noise
+float noise(vec2 p, float freq){
+    float unit = iResolution.x / freq;
+    vec2 ij = floor(p / unit);
+    vec2 xy = .5 * (1. - cos(PI * mod(p, unit) / unit));
+    float a = rand((ij + vec2(0., 0.)));
+    float b = rand((ij + vec2(1., 0.)));
+    float c = rand((ij + vec2(0., 1.)));
+    float d = rand((ij + vec2(1., 1.)));
+    float x1 = mix(a,b,xy.x);
+    float x2 = mix(c,d,xy.x);
+    return mix(x1,x2,xy.y);
 }
 
 /** 
@@ -115,19 +132,19 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord.xy / iResolution.xy;
     
     vec2 centerA = vec2(
-        snoise(vec2(2.25, 2.5) * iTime * .005),
-        snoise(vec2(3.25, 0.5) * iTime * .0010)
+        noise(vec2(2.25, 2.5) * iTime * 5, 0.5),
+        noise(vec2(3.25, 0.5) * iTime * 10, 0.5)
     );
     vec2 centerB = vec2(
-        snoise(vec2(20., 2000.) + vec2(0.25, 2.5) * iTime * .008),
-        snoise(vec2(2000., 20.) + vec2(1.75, 0.5) * iTime * .0015)
+        noise(vec2(20., 2000.) + vec2(0.25, 2.5) * iTime * 8, 0.25),
+        noise(vec2(2000., 20.) + vec2(1.75, 0.5) * iTime * 15, 0.25)
     );
     
     float distA = sdCircle(uv, centerA, 0.05 + 0.25 * sin(iTime * 0.025));
     float distB = sdCircle(uv, centerB, 0.25 + 0.125 * sin(iTime * 0.1));
     
-    vec3 colorA = vec3(0.75 + 0.25 * cos(iTime * 0.1), 0.5, 0.5);
-    vec3 colorB = vec3(0.25 + 0.125 * cos(iTime), 0.5, 0.5);
+    vec3 colorA = vec3(0.75, 0.5, 0.5);
+    vec3 colorB = vec3(0.25, 0.5, 0.5);
     vec3 color = getColor(uv, centerA, centerB, colorA, colorB);
     
     float pattern = smoothstep(0.2, 0.9, fract(distA) + fract(distB));
