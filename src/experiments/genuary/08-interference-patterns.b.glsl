@@ -35,7 +35,7 @@ void main(void) { mainImage(fragColor,inData.v_texcoord * iResolution.xy); }
  */
 #define PI 3.14159265359
 
-#define CIRCLES 3
+#define CIRCLES 4
 
 /**
  * Pseudo-random based on sine with float input
@@ -126,7 +126,7 @@ float getHues(in vec2 point, in vec3[CIRCLES] c) {
             
             float dist;
             dist = distA / (distB + distA);
-            hue = mix(hues[i - 1], hues[i], dist);
+            hue = mix(hue, hues[i], dist);
         }
     }
     
