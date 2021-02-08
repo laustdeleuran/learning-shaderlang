@@ -30,9 +30,22 @@ void main(void) { mainImage(fragColor,inData.v_texcoord * iResolution.xy); }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Constants
+ */
 #define PI 3.14159265359
 
-#define CIRCLES 2
+#define CIRCLES 3
+
+/**
+ * Pseudo-random based on sine with float input
+ * @src https://thebookofshaders.com/10/
+ * @param seed {float}
+ * @return {float}
+ */
+float random(float seed) {
+    return fract(sin(seed)*1e4);
+}
 
 /**
  * Map range to new range
@@ -94,15 +107,50 @@ vec3 hsb2rgb(in vec3 c) {
 }
 
 /** 
- * Get color
+ * Get color hues
  */
-vec3 getColor(in vec2 point, in vec2 centerA, in vec2 centerB, in vec3 colorA, in vec3 colorB) {
-    float distA = distance(point, centerA);
-    float distB = distance(point, centerB);
+float getHues(in vec2 point, in vec3[CIRCLES] c) {
+    float hue;
+
+    float[CIRCLES] hues;
+    for (int i = 0; i < CIRCLES; i++) {
+        float r = random(float(i));
+        hues[i] = (0.25 + r * 0.75) + 0.125 * cos(iTime * (0.05 + r * 0.05));
+    }
     
-    float dist;
-    dist = distA / (distB + distA);
-    return mix(colorA, colorB, dist);
+    for (int i = 0; i < CIRCLES; i++) {
+        if (i == 0) hue = hues[i];
+        else {
+            float distA = distance(point, c[i - 1].xy);
+            float distB = distance(point, c[i].xy);
+            
+            float dist;
+            dist = distA / (distB + distA);
+            hue = mix(hues[i - 1], hues[i], dist);
+        }
+    }
+    
+    return hue;
+}
+
+/**
+ * Get circle centers, xy is center point, z is distance field
+ */
+vec3[CIRCLES] circles(in vec2 point) {
+    vec3[CIRCLES] centers; 
+    for (int i = 0; i < CIRCLES; i++) {
+        float t = float(i);
+        float rand = random(t);
+        vec2 center = vec2(
+            snoise(vec2(20., 2000. * t) + vec2(0.25, 2.5) * iTime * (.008 + rand * 0.025)),
+            snoise(vec2(2000. * t, 20.) + vec2(1.75, 0.5) * iTime * (.0015 + rand * 0.025))
+        );
+        centers[i] = vec3(
+            center, 
+            sdCircle(point, center, 0.375 * rand + (0.25 + rand * 0.125) * sin(iTime * (0.025 + 0.0125 * rand)))
+        );
+    }
+    return centers;
 }
 
 /**
@@ -111,30 +159,20 @@ vec3 getColor(in vec2 point, in vec2 centerA, in vec2 centerB, in vec3 colorA, i
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = fragCoord.xy / iResolution.xy;
     
-    vec2 centerA = vec2(
-        snoise(vec2(2.25, 2.5) * iTime * .005),
-        snoise(vec2(3.25, 0.5) * iTime * .0010)
-    );
-    vec2 centerB = vec2(
-        snoise(vec2(20., 2000.) + vec2(0.25, 2.5) * iTime * .008),
-        snoise(vec2(2000., 20.) + vec2(1.75, 0.5) * iTime * .0015)
-    );
+    vec3[CIRCLES] c = circles(uv);
+    float dist = 0.;
+    for (int i = 0; i < CIRCLES; i++) {
+        dist += fract(c[i].z);
+    }
+    if (CIRCLES > 2) dist /= float(CIRCLES - 1);
     
-    float distA = sdCircle(uv, centerA, 0.05 + 0.25 * sin(iTime * 0.025));
-    float distB = sdCircle(uv, centerB, 0.25 + 0.125 * sin(iTime * 0.1));
-    
-    vec3 colorA = vec3(0.75 + 0.25 * cos(iTime * 0.1), 0.5, 0.5);
-    vec3 colorB = vec3(0.25 + 0.125 * cos(iTime), 0.5, 0.5);
-    //vec3 colorA = vec3(0.65 + 0.25 * cos(iTime * 0.1), 0.5, 0.5);
-    //vec3 colorB = vec3(0.85 + 0.125 * cos(iTime), 0.5, 0.5);
-    vec3 color = getColor(uv, centerA, centerB, colorA, colorB);
-    
-    float pattern = smoothstep(0.2, 0.9, fract(distA) + fract(distB));
+    float pattern = smoothstep(0.2, 0.9, dist);
     float pixelNoise = snoise(uv * 300.);
     
+    float hue = getHues(uv, c);
     fragColor = vec4(hsb2rgb(vec3(
-        color.x + pattern * .15,
-        color.y,
+        hue + pattern * .15,
+        0.5,
         1. - pixelNoise * 0.05
     )), 1.0);
 }
