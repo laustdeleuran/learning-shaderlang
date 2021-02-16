@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 1474.0, -295.0, 2092.0, 1319.0 ],
+		"rect" : [ 2754.0, -295.0, 1212.0, 1319.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -555,10 +555,10 @@
 					"clipheight" : 62.018869459629059,
 					"data" : 					{
 						"clips" : [ 							{
-								"absolutepath" : "brannskulla.mp3",
-								"filename" : "brannskulla.mp3",
+								"absolutepath" : "ComeWithMeMasterR1.mp3",
+								"filename" : "ComeWithMeMasterR1.mp3",
 								"filekind" : "audiofile",
-								"id" : "u441001333",
+								"id" : "u418001093",
 								"loop" : 1,
 								"content_state" : 								{
 									"loop" : 1
@@ -921,14 +921,7 @@
 
 			}
  ],
-		"dependency_cache" : [ 			{
-				"name" : "brannskulla.mp3",
-				"bootpath" : "~/Desktop/art",
-				"patcherrelativepath" : "../../../../../../Desktop/art",
-				"type" : "Mp3",
-				"implicit" : 1
-			}
- ],
+		"dependency_cache" : [  ],
 		"autosave" : 0
 	}
 
