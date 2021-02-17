@@ -131,8 +131,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
-					"patching_rect" : [ 506.817320704460144, 768.936483025550842, 36.0, 22.0 ],
-					"text" : "> 0.3"
+					"patching_rect" : [ 506.817320704460144, 768.936483025550842, 49.0, 22.0 ],
+					"text" : "> 1.075"
 				}
 
 			}
@@ -143,8 +143,8 @@
 					"numinlets" : 3,
 					"numoutlets" : 2,
 					"outlettype" : [ "float", "float" ],
-					"patching_rect" : [ 506.817320704460144, 902.67324960231781, 108.0, 22.0 ],
-					"text" : "makenote 127 300"
+					"patching_rect" : [ 506.817320704460144, 902.67324960231781, 115.0, 22.0 ],
+					"text" : "makenote 127 2000"
 				}
 
 			}
@@ -275,7 +275,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "float", "float" ],
 					"patching_rect" : [ 864.27016681432724, 902.67324960231781, 108.0, 22.0 ],
-					"text" : "makenote 127 300"
+					"text" : "makenote 127 100"
 				}
 
 			}
@@ -400,7 +400,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "float", "float" ],
 					"patching_rect" : [ 147.477682054042816, 902.67324960231781, 108.0, 22.0 ],
-					"text" : "makenote 127 300"
+					"text" : "makenote 127 100"
 				}
 
 			}
@@ -555,10 +555,10 @@
 					"clipheight" : 62.018869459629059,
 					"data" : 					{
 						"clips" : [ 							{
-								"absolutepath" : "ComeWithMeMasterR1.mp3",
-								"filename" : "ComeWithMeMasterR1.mp3",
+								"absolutepath" : "10-tree.b.music.come-with-me.mp3",
+								"filename" : "10-tree.b.music.come-with-me.mp3",
 								"filekind" : "audiofile",
-								"id" : "u418001093",
+								"id" : "u186000697",
 								"loop" : 1,
 								"content_state" : 								{
 									"loop" : 1
@@ -579,7 +579,7 @@
 					"originaltempo" : 120.0,
 					"outlettype" : [ "signal", "signal", "signal", "", "dictionary" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 147.477682054042816, 165.687184572219849, 420.754729568958282, 63.018869459629059 ],
+					"patching_rect" : [ 147.477682054042816, 167.687184572219849, 420.754729568958282, 63.018869459629059 ],
 					"pitchcorrection" : 0,
 					"quality" : "basic",
 					"style" : "default",
@@ -921,7 +921,14 @@
 
 			}
  ],
-		"dependency_cache" : [  ],
+		"dependency_cache" : [ 			{
+				"name" : "10-tree.b.music.come-with-me.mp3",
+				"bootpath" : "~/Sites/personal/learning-shaderlang/src/experiments/genuary",
+				"patcherrelativepath" : ".",
+				"type" : "Mp3",
+				"implicit" : 1
+			}
+ ],
 		"autosave" : 0
 	}
 
