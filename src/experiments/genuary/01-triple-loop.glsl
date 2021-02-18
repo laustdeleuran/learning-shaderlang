@@ -1,141 +1,105 @@
-#version 150
+#ifdef GL_ES
+precision mediump float;
+#endif
 
-in VertexData
-{
-    vec4 v_position;
-    vec3 v_normal;
-    vec2 v_texcoord;
-} inData;
-
-out vec4 fragColor;
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-uniform vec2 iResolution;
-uniform float iTime;
-uniform float iTimeDelta;
-uniform int iFrame;
-uniform vec4 iMouse;
-uniform sampler2D iChannel0;
-uniform sampler2D iChannel1;
-uniform sampler2D iChannel2;
-uniform sampler2D iChannel3;
-uniform vec4 iDate;
-uniform float iSampleRate;
-
-void mainImage(out vec4, in vec2);
-void main(void) { mainImage(fragColor,inData.v_texcoord * iResolution.xy); }
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+uniform float u_time;
 
 #define PI 3.14159265359
 
-/**
- * Map range to new range
- */
 float map(float value, float min1, float max1, float min2, float max2) {
-    return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
 
-/**
- * Simplex noise
- * @src https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83#simplex-noise
- */
-vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-
-float snoise(vec2 v){
-  const vec4 C = vec4(0.211324865405187, 0.366025403784439,
-           -0.577350269189626, 0.024390243902439);
-  vec2 i  = floor(v + dot(v, C.yy) );
-  vec2 x0 = v -   i + dot(i, C.xx);
-  vec2 i1;
-  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-  vec4 x12 = x0.xyxy + C.xxzz;
-  x12.xy -= i1;
-  i = mod(i, 289.0);
-  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-  + i.x + vec3(0.0, i1.x, 1.0 ));
-  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
-    dot(x12.zw,x12.zw)), 0.0);
-  m = m*m ;
-  m = m*m ;
-  vec3 x = 2.0 * fract(p * C.www) - 1.0;
-  vec3 h = abs(x) - 0.5;
-  vec3 ox = floor(x + 0.5);
-  vec3 a0 = x - ox;
-  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-  vec3 g;
-  g.x  = a0.x  * x0.x  + h.x  * x0.y;
-  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-  return map(130.0 * dot(m, g), -1., 1., 0., 1.);
+float random (in vec2 _st) {
+    return fract(sin(dot(_st.xy,
+                         vec2(12.9898,78.233)))*
+        43758.5453123);
 }
 
 /** 
- * Circle distance function
- * @src https://www.iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+ * Noise
+ * @src https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83#perlin-noise
  */
-float sdCircle(in vec2 point, in vec2 center, in float radius) {
-    return distance(point, center) / radius;
-}
  
+// Noise: Random
+float rand(vec2 c){
+    return fract(sin(dot(c.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+// Noise: Basic noise
+float noise(vec2 p, float freq){
+    float unit = u_resolution.x / freq;
+    vec2 ij = floor(p / unit);
+    vec2 xy = .5 * (1. - cos(PI * mod(p, unit) / unit));
+    float a = rand((ij + vec2(0., 0.)));
+    float b = rand((ij + vec2(1., 0.)));
+    float c = rand((ij + vec2(0., 1.)));
+    float d = rand((ij + vec2(1., 1.)));
+    float x1 = mix(a,b,xy.x);
+    float x2 = mix(c,d,xy.x);
+    return mix(x1,x2,xy.y);
+}
+
+
+/**
+ * Fractional Brownian Motion
+ * @src https://thebookofshaders.com/13/
+ */
+float fbm ( in vec2 _st, in int octaves) {
+    float v = 0.0;
+    float a = 0.5;
+    vec2 shift = vec2(100.0);
+    // Rotate to reduce axial bias
+    mat2 rot = mat2(cos(0.5), sin(0.5),
+                    -sin(0.5), cos(0.50));
+    for (int i = 0; i < octaves; ++i) {
+        v += a * noise(_st, 2000. + abs(1000. * sin(u_time * 0.0009)));
+        _st = rot * _st * 2.0 + shift;
+        a *= 0.5;
+    }
+    return v;
+}
+
 /**
  * HSB to RGB
- * All components are in the range [0…1], including hue.
- * @src https://stackoverflow.com/a/17897228
+ * @src https://thebookofshaders.com/06/
  */
-vec3 hsb2rgb(in vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+vec3 hsb2rgb( in vec3 c ){
+    vec3 rgb = clamp(abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),
+                             6.0)-3.0)-1.0,
+                     0.0,
+                     1.0);
+    rgb = rgb*rgb*(3.0-2.0*rgb);
+    return c.z * mix( vec3(1.0), rgb, c.y);
 }
 
 /** 
- * Get color
- */
-vec3 getColor(in vec2 point, in vec2 centerA, in vec2 centerB, in vec3 colorA, in vec3 colorB) {
-    float distA = distance(point, centerA);
-    float distB = distance(point, centerB);
-    
-    float dist;
-    if (distA < distB) {
-        dist = distA / (distB + distA);
-        return mix(colorA, colorB, dist);
-    } else {
-        dist = distB / (distB + distA);
-        return mix(colorB, colorA, dist);
-    }
-}
-
-/**
+* Genuary 01
  * @main
  */
-void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 uv = fragCoord.xy / iResolution.xy;
+void main() {
+    vec2 st = gl_FragCoord.xy/u_resolution.xy*1.;
+    vec3 color = vec3(0.0);
+
+    vec2 r = vec2(0.);
+    r.x = fbm(st  + 0.10, 1);
+
+    float f = fbm(st+r, 10);
+    f = f* 0.5 + fbm(vec2(f *0.5), 2);
+    f = f* 0.5 + fbm(vec2(f *0.5), 2);
     
-    vec2 centerA = vec2(
-        snoise(vec2(2.25, 2.5) * iTime * .005),
-        snoise(vec2(3.25, 0.5) * iTime * .0010)
-    );
-    vec2 centerB = vec2(
-        snoise(vec2(20., 2000.) + vec2(0.25, 2.5) * iTime * .008),
-        snoise(vec2(2000., 20.) + vec2(1.75, 0.5) * iTime * .0015)
-    );
-    
-    float distA = sdCircle(uv, centerA, 0.05 + 0.25 * sin(iTime * 0.025));
-    float distB = sdCircle(uv, centerB, 0.25 + 0.125 * sin(iTime * 0.1));
-    
-    vec3 colorA = vec3(0.75 + 0.25 * cos(iTime * 0.1), 0.5, 0.5);
-    vec3 colorB = vec3(0.25 + 0.125 * cos(iTime), 0.5, 0.5);
-    vec3 color = getColor(uv, centerA, centerB, colorA, colorB);
-    
-    float pattern = smoothstep(0.2, 0.9, fract(distA) + fract(distB));
-    float pixelNoise = snoise(uv * 300.);
-    
-    fragColor = vec4(hsb2rgb(vec3(
-        color.x + pattern * .15,
-        color.y,
-        1. - pixelNoise * 0.025
-    )), 1.0);
+    float t = smoothstep(0., 1., abs(map(fract(u_time * .075), 0., 1., -1., 1.)));
+
+    color = hsb2rgb(mix(vec3(1,1,1),
+                mix(
+                    vec3(0.716,0.725, 0.75 + 0.25 * sin(u_time * 0.1)),
+                    vec3(0.991,0.625, 0.75 + 0.25 * sin(u_time * 0.1)),
+                    t * 0.5 + st.y * 0.5
+                ),
+                clamp((f*f)*4.0,0.0,1.0)));
+
+
+    gl_FragColor = vec4((f*f*f+.3*f*f+.8*f)*color,1.);
 }
