@@ -1,60 +1,45 @@
+#version 150
 
+in VertexData
+{
+    vec4 v_position;
+    vec3 v_normal;
+    vec2 v_texcoord;
+} inData;
+
+out vec4 fragColor;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+uniform vec2 iResolution;
+uniform float iTime;
+
+void mainImage(out vec4, in vec2);
+void main(void) { mainImage(fragColor,inData.v_texcoord * iResolution.xy); }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+#define PI 3.14159265359
 #define e 2.7182818
 
+
 /**
- * Distance field circle
- * @src https://thebookofshaders.com/07/
- * @param coordinate {vec2} - normalized (0-1, 0-1) coordinate
- * @param radius {float} - radius
- * @return {float} distance
+ * Rotate coordinate system from the center by angle
+ * @src https://thebookofshaders.com/08/
+ * @param coordinates {vec2}
+ * @param angle {float} - angle in radians (360 degrees = 2 * PI)
+ * @return {vec2}
  */
-float circle(in vec2 coordinate, in vec2 center, in float radius, in float edge) {
-    float dist = length(coordinate - center) / radius;
-    return dist;
-}
-
-float circle(in vec2 uv, in vec2 center, in float radius) {
-    return circle(uv, center, radius, 1./iResolution.x);
-}
-
-/** 
- * Got a Cleu?
- * @param coordinate {vec2} - normalized (0-1, 0-1) coordinate
- * @param radius {float} - radius
- */
-float cleu(in vec2 uv, in vec2 center, in float radius, in int count, in float part) {
-    int i = 0;
-    
-    // Create outer circle (A)
-    float dist = circle(uv, center, radius);
-    if (dist < 1.) {
-        i++;
-    
-        for (int t = 0; t < count / 2; t++) {
-            if (i >= count) break;
-
-            // Create big inner circle (B)
-            center.y -= radius;
-            radius = radius * (1. - part);
-            center.y += radius;
-        
-            float distB = circle(uv, center, radius);
-            
-            if (distB < 1.) i++;
-            if (i >= count - 1) break;
-            
-            // Create small inner circle (C)
-            center.y += radius;
-            radius = radius * (1. + part / (1. - part)) * part;
-            center.y += radius;
-            
-            float distC = circle(uv, center, radius);
-            
-            if (distC < 1.) i += 2;
-        }
-    }
-    
-    return float(i)  / float(count);
+vec2 rotate2d(vec2 coordinate, float angle){
+    coordinate = mat2(
+        cos(angle),
+        -sin(angle),
+        sin(angle),
+        cos(angle)
+    ) * coordinate; // Rotate coordinate
+    return coordinate;
 }
 
 /**
@@ -136,40 +121,103 @@ float random(float seed) {
     return fract(sin(seed)*1e4);
 }
 
+/**
+ * Distance field circle
+ * @src https://thebookofshaders.com/07/
+ * @param coordinate {vec2} - normalized (0-1, 0-1) coordinate
+ * @param radius {float} - radius
+ * @return {float} distance
+ */
+float circle(in vec2 coordinate, in vec2 center, in float radius, in float edge) {
+    float dist = length(coordinate - center) / radius;
+    return dist;
+}
+
+float circle(in vec2 uv, in vec2 center, in float radius) {
+    return circle(uv, center, radius, 1./iResolution.x);
+}
+
+/** 
+ * Got a Cleu?
+ * @param coordinate {vec2} - normalized (0-1, 0-1) coordinate
+ * @param radius {float} - radius
+ */
+vec2 cleu(in vec2 uv, in vec2 center, in float radius, in float count, in float part) {
+    float i = 0;
+    float d = 1.;
+    
+    // Create outer circle (A)
+    float dist = circle(uv, center, radius);
+    if (dist < 1.) {
+        d = 1. - dist;
+        i++;
+    
+        for (float t = 0.; t < count / 2.; t++) {
+            if (i >= count) break;
+            // Create big inner circle (B)
+            center.y -= radius;
+            radius = radius * (1. - part);
+            center.y += radius;
+        
+            float distB = circle(uv, center, radius);
+            
+            if (distB < 1.) {
+                i++;
+                d = 1. - distB;
+            };
+            if (i >= count - 1.) break;
+            
+            // Create small inner circle (C)
+            center.y += radius;
+            radius = radius * (1. + part / (1. - part)) * part;
+            center.y += radius;
+            
+            float distC = circle(uv, center, radius);
+            
+            if (distC < 1.) {
+                i += 2.;
+                d = 1. - distC;
+            };
+        }
+    }
+    
+    
+    return vec2(i, d);
+}
+
 /** 
  * @main
  */
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 uv = (fragCoord.xy - 0.5 * iResolution.xy) / iResolution.y;
-    int count = 4;
-    float dist = cleu(uv, vec2(0.), 0.4, count, 1./e);
+    uv *= map(sin(iTime * 0.5), -1., 1., 1., 0.9);
+    
+    vec2 cl = cleu(uv, vec2(0.), 0.38, 4., 1./e);
     
     float pixelNoise = snoise(uv * 300.);
     
-    vec3 color = hsb2rgb(vec3(
+    vec3 bg = hsb2rgb(vec3(
         0., 
         0.,
-        0.075 * (circle(uv, vec2(0.), 0.75)) + pixelNoise * 0.025 
+        0.175 * (circle(uv, vec2(0.), 0.75)) + pixelNoise * 0.025 
     ));
 
-    for (int s = 1; s <= count; s++) {
-        if (dist == float(s) / float(count)) {
-            vec2 r = vec2(0.);
-            r.x = fbm(uv + random(float(s)) + 0.10, 1);
-        
-            float f = fbm(uv + r, 10);
-            f = f * 0.5 + fbm(vec2(f * 0.5) + iTime * 0.05, 2);
-            f = f * 0.5 + fbm(vec2(f * 0.25) + -iTime * 0.05, 2);
-            
-            color = vec3(f);
-            
-            color = hsb2rgb(vec3(
-                color.x + dist * 0.25,
-                min(color.y, 1.) - (1. - dist) * 0.2,
-                min(color.z, 1.) * 1.6 + pixelNoise * 0.125
-            ));
-        }
-    }
+    vec2 r = vec2(0.);
+    r.x = fbm(uv + random(cl.x) + 0.10, 1);
+
+    float f = fbm(uv + r, 10);
+    f = f * 0.5 + fbm(vec2(f * 0.5) + iTime * 0.05, 2);
+    f = f * 0.5 + fbm(vec2(f * 0.25) + -iTime * 0.05, 2);
+    
+    vec3 color = vec3(f);
+    
+    color = hsb2rgb(vec3(
+        color.x * 0.75 + cl.y * 0.25,
+        min(color.y, 1.) - (1. - cl.y) * 0.25,
+        min(color.z, 1.) * 1.6 + pixelNoise * 0.125
+    ));
+    
+    if (cl.x == 0. && cl.y == 1.) color = bg * 0.85 + color * 0.15;
     
     fragColor = vec4(color, 1.);
 }
