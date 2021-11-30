@@ -1,0 +1,40 @@
+{
+	"CONTROLS": [
+		{
+			"DEFAULT": 0.8,
+			"DESCRIPTION": "BPM vs Time",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "bpm_vs_time",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "noise"
+		},
+		{
+			"DEFAULT": 0.716,
+			"DESCRIPTION": "Color A",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_a",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "color"
+		},
+		{
+			"DEFAULT": 0.991,
+			"DESCRIPTION": "Color B",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_b",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "color"
+		}
+	],
+	"CREDIT": "Laust Deleuran",
+	"DESCRIPTION": "",
+	"HEIGHT": 1920,
+	"IMAGE_PATH": "triple-loop.png",
+	"TITLE": "Triple Loop",
+	"WIDTH": 1920
+}

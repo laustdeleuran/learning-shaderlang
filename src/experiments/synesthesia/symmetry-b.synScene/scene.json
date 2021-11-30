@@ -1,0 +1,51 @@
+{
+	"CONTROLS": [
+		{
+			"DEFAULT": 0.716,
+			"DESCRIPTION": "Color A",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_a",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.991,
+			"DESCRIPTION": "Color B",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_b",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.99999,
+			"DESCRIPTION": "Reset Threshold",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "reset_threshold",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "sine"
+		},
+		{
+			"DEFAULT": 0.9,
+			"DESCRIPTION": "Force reset",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "force_reset",
+			"TYPE": "bang",
+			"UI_GROUP": "sine"
+		}
+	],
+	"IMAGES": [{ "NAME": "sandPattern", "PATH": "images/sand-patterns.jpg" }],
+	"CREDIT": "Laust Deleuran",
+	"DESCRIPTION": "",
+	"HEIGHT": 1920,
+	"IMAGE_PATH": "symmetry-b.png",
+	"TITLE": "Symmetry B",
+	"WIDTH": 1920
+}

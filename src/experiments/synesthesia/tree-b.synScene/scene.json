@@ -1,0 +1,87 @@
+{
+	"CONTROLS": [
+		{
+			"DEFAULT": 0.200000002980232,
+			"DESCRIPTION": "Rotation",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "rotation",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Interaction"
+		},
+		{
+			"DEFAULT": 0.200000002980232,
+			"DESCRIPTION": "Time",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "time",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Interaction"
+		},
+		{
+			"DEFAULT": 0.709999978542328,
+			"DESCRIPTION": "Color A",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_a",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Colors"
+		},
+		{
+			"DEFAULT": 0.589999973773956,
+			"DESCRIPTION": "Color B",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_b",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Colors"
+		},
+		{
+			"DEFAULT": 0.720000028610229,
+			"DESCRIPTION": "Color C",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_c",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Colors"
+		},
+		{
+			"DEFAULT": 0.75,
+			"DESCRIPTION": "Color D",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_d",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Colors"
+		},
+		{
+			"DEFAULT": 1,
+			"DESCRIPTION": "Brightness",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "brightness",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Colors"
+		}
+	],
+	"CREDIT": "Laust Deleuran",
+	"DESCRIPTION": "",
+	"HEIGHT": 1920,
+	"IMAGE_PATH": "tree_b.png",
+	"TITLE": "Tree B",
+	"WIDTH": 1920
+}

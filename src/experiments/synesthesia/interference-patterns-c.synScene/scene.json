@@ -1,0 +1,71 @@
+{
+	"CONTROLS": [
+		{
+			"DEFAULT": 0.2,
+			"DESCRIPTION": "Size for circle A",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "size_a",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "size"
+		},
+		{
+			"DEFAULT": 0.8,
+			"DESCRIPTION": "Size for circle B",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "size_b",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "size"
+		},
+		{
+			"DEFAULT": 0.2,
+			"DESCRIPTION": "Color for circle A",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_a",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.8,
+			"DESCRIPTION": "Color for circle B",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_b",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 5,
+			"DESCRIPTION": "Color Change Speed",
+			"IS_META": false,
+			"MAX": 10,
+			"MIN": 0,
+			"NAME": "color_speed",
+			"PARAMS": 0.00999999977648258,
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.25,
+			"DESCRIPTION": "Determines how much the bass will affect speed. Default: 25%.",
+			"IS_META": false,
+			"MAX": 0.800000011920929,
+			"MIN": 0,
+			"NAME": "auto_in",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "movement"
+		}
+	],
+	"CREDIT": "Laust Deleuran",
+	"DESCRIPTION": "",
+	"HEIGHT": 1920,
+	"IMAGE_PATH": "interference-patterns-c.png",
+	"TITLE": "Interference Patterns C",
+	"WIDTH": 1920
+}

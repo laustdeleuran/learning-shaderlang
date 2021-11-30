@@ -1,0 +1,90 @@
+{
+	"CONTROLS": [
+		{
+			"DEFAULT": 0.7,
+			"DESCRIPTION": "Color A",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_a",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.995,
+			"DESCRIPTION": "Color B",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_b",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.52,
+			"DESCRIPTION": "Color C",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_c",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.7,
+			"DESCRIPTION": "Color D",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_d",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.8,
+			"DESCRIPTION": "Color E",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_e",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "colors"
+		},
+		{
+			"DEFAULT": 0.2,
+			"DESCRIPTION": "Color BG",
+			"IS_META": false,
+			"MAX": 1,
+			"MIN": 0,
+			"NAME": "color_bg",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "background"
+		},
+		{
+			"DEFAULT": 1.0,
+			"DESCRIPTION": "Rotation",
+			"IS_META": false,
+			"MAX": 1.0,
+			"MIN": -1.0,
+			"NAME": "rotation",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Rotation"
+		},
+		{
+			"DEFAULT": 0.031,
+			"DESCRIPTION": "Rotation",
+			"IS_META": false,
+			"MAX": 0.3,
+			"MIN": 0.0,
+			"NAME": "speed",
+			"TYPE": "knob smooth",
+			"UI_GROUP": "Rotation"
+		}
+	],
+	"CREDIT": "Laust Deleuran",
+	"DESCRIPTION": "",
+	"HEIGHT": 1920,
+	"IMAGE_PATH": "triangle-subdivision.png",
+	"TITLE": "Triangle Subdivision",
+	"WIDTH": 1920
+}
